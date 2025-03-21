@@ -102,7 +102,11 @@ pub fn render_message(message: &Message, debug: bool) {
     for content in &message.content {
         match content {
             MessageContent::Text(text) => print_markdown(&text.text, theme),
-            MessageContent::ToolRequest(req) => render_tool_request(req, theme, debug),
+            MessageContent::ToolRequest(req) => {
+                if std::env::var("GOOSE_CLI_HIDE_TOOL_REQUESTS").is_err() {
+                    render_tool_request(req, theme, debug)
+                }
+            },
             MessageContent::ToolResponse(resp) => render_tool_response(resp, theme, debug),
             MessageContent::Image(image) => {
                 println!("Image: [data: {}, type: {}]", image.data, image.mime_type);
